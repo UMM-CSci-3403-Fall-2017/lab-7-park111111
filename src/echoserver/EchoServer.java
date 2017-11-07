@@ -28,7 +28,11 @@ public lass EchoThreadServer {
 
 class EchoThread extends Thread{
 	private Socket sock;
-	public Echo 
+	public EchoThread(Socket socke){
+	       this.sock = socke;
+	}
+
+public void run	
 
 
 
