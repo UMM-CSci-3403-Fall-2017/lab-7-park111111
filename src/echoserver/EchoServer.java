@@ -5,57 +5,33 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.io.*;
-import java.net.*;
 
 public class EchoServer {
-	public static void main(String [] args) {
-		ServerSocket server = null;
-		Socket socket = null;
-		InetAddress inetAddr = null;
-		InputStream in = null;
-		OutputStream out = null;
-		BufferedReader reader = null;
-		PrintWriter writer = null;
-		try {
-			//create server socket
-			server = new ServerSocket(6013);
+	
+	public static final int PORT_NUMBER = 6013;
 
-			//waiting for client connection
-			System.out.println("====Waiting for client connection(port:"+server.getLocalPort()+")++++");
-			socket = server.accept();
+	public static void main(String[] args) throws IOException, InterruptedException {
 
-			//request client connection
-			inetAddr = server.getInetAddress();
-			System.out.println("client("+inetAddr.getHostAddress()+")connection");
+		EchoServer server = new EchoServer();
+		server.start();
+	}
 
-			//create stream for clinet communication
-			in = socket.getInputStream();
-			out = socket.getOutputStream();
-			reader = new BufferedReader(new InputStreamReader(in));
-			writer = new PrintWriter(new OutputStreamWriter(out));
-			String msg = null;
+	class EchoThread extends Thread{
+		private Socket sock;
+		public EchoThread(socket socke){
+			this.sock = socke;
+		}
 
-			//communicate with client
-			while((msg = reader.readLine()) !=null) {
-				System.out.println("$tCLIENT>" +msg);
-				writer.println(msg);
-				writer.flush();
+		public void run() {
+			try{
+				OutputStream out = sock.getOutputStream();
+				InputStrema in = sock.getInputStream();
+
 			}
-		} catch(IOException e) {
+			sock.close();
+			System.out.println("Disconnected!");
+		} catch(IOException e){
 			System.out.println(e);
-		}finally {
-			try {
-				reader.close();
-				writer.close();
-				in.close();
-				out.close();
-				socket.close();
-				server.close();
-				System.out.println("Disconnect!");
-			} catch(IOException e) {
-				System.out.println(e);
-			}
 		}
 	}
 }
