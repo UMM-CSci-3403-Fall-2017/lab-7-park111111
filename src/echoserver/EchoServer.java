@@ -39,13 +39,27 @@ public class EchoServer extends Thread {
 				sock.close();
 				System.out.println("Disconnected!");
 			
-			} catch (IOException ioe) {
+			} catch (IOException e) {
 				System.out.println("ERROR!");
 				
-				System.out.println(ioe);
+				System.out.println(e);
 			}
 		}
 	}
+
+	void start() throws IOException, InterruptedException {
+	//	@SuppressWarnings("resource")
+		ServerSocket socketServer = new ServerSocket(6013);
+		while (true) {
+			Socket socket = serverSocket.accept();
+			System.out.println("Connected!");
+			EchoThread Threads = new EchoThread(socket);
+			Threads.run();
+		}
+
+	}
 }
+
+
 
 
