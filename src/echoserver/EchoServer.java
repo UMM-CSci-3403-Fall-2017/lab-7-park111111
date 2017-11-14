@@ -9,7 +9,7 @@ import java.io.*;
 import java.net.*;
 
 
-public class EchoServer extends Thread {
+public class EchoServer {
 	
 	public static final int PORT_NUMBER = 6013;
 
@@ -27,6 +27,7 @@ public class EchoServer extends Thread {
 		
 		public void run() {
 			try {
+
 				OutputStream out = sock.getOutputStream();
 				InputStream in = sock.getInputStream();
 
@@ -49,7 +50,7 @@ public class EchoServer extends Thread {
 
 	void start() throws IOException, InterruptedException {
 	//	@SuppressWarnings("resource")
-		ServerSocket socketServer = new ServerSocket(6013);
+		ServerSocket serverSocket = new ServerSocket(6013);
 		while (true) {
 			Socket socket = serverSocket.accept();
 			System.out.println("Connected!");
