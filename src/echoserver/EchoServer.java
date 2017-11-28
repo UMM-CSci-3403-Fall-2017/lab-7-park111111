@@ -7,60 +7,58 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.*;
 import java.net.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 
 
 public class EchoServer {
 	
-	public static final int PORT_NUMBER = 6013;
+//	public static final int PORT_NUMBER = 6013;
+//	public static ExecutorService fixedThreadPool;
 
 	public static void main(String[] args) throws IOException, InterruptedException {
+		try{
+			ServerSocket socket = new ServerSocket(6013);
+			
+			ExecutorService thread = Executors.newFixedThreadPool(2);
 
-		EchoServer server = new EchoServer();
-		server.start();
+		while(true){
+			Socket socks = socket.accept();
+			EchoThread ThreadServer = new EchoThread(socks);
+			thread.execute(ThreadServer);
+		}
+	}catch (IOException ioe){
+		System.err.println(ioe);
+	}
 	}
 
-	class EchoThread extends Thread {
-		private Socket sock;
-		public EchoThread(Socket socke){
-			this.sock = socke;
-		}
-		
-		public void run() {
-			try {
 
+
+	public static class EchoThread extends Thread {
+		Socket sock;
+		public EchoThread(Socket sock) {
+			this.sock = sock;
+		}
+
+		public void run() {
+			try{
 				OutputStream out = sock.getOutputStream();
 				InputStream in = sock.getInputStream();
-
+				
 				int NewType;
 				while((NewType = in.read()) != -1) {
 					out.write(NewType);
-
+				//	System.out.println(NewType);
 				}
+			//	System.out.flush();
+			//
 				out.flush();
+				sock.shutdownOutput();
 				sock.close();
-				System.out.println("Disconnected!");
-			
 			} catch (IOException e) {
-				System.out.println("ERROR!");
-				
-				System.out.println(e);
+				System.err.println(e);
 			}
 		}
 	}
-
-	void start() throws IOException, InterruptedException {
-	//	@SuppressWarnings("resource")
-		ServerSocket serverSocket = new ServerSocket(6013);
-		while (true) {
-			Socket socket = serverSocket.accept();
-			System.out.println("Connected!");
-			EchoThread Threads = new EchoThread(socket);
-			Threads.run();
-		}
-
-	}
 }
-
-
-
 
